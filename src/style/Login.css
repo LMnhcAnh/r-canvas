@@ -1,0 +1,189 @@
+html, body {
+  margin: 0 !important;
+  padding: 0 !important;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Layout */
+.login-page {
+  font-family: "'Rock Salt', cursive";
+  color: #666851;
+  background-color: #e6ffff;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  position: relative;   
+}
+
+.login-header {
+  position: absolute;
+  top: 30px;
+  left: 28%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.login-logo {
+  width: 40px;
+}
+
+.login-title {
+  font-size: 1.5rem;
+  font-weight: 400;
+  color: black;
+}
+
+/* Box */
+.login-box {
+  background-color: #adebeb;
+  padding: 40px 30px 400px;
+  border-radius: 24px;
+  width: 787.5px;
+  height: 560px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: start;
+  box-sizing: border-box;
+  overflow: visible;
+  margin-bottom: 0; 
+  position: relative;
+}
+
+/* Input */
+.login-input {
+  width: 80%;
+  max-width: 600px;
+  margin: 0 auto;
+  height: 61px;
+  padding: 14px 20px;
+  border: 3px solid #383a14;   /* ⬅️ Thicker, darker border */
+  border-radius: 16px;
+  background-color: transparent;
+  margin-bottom: 24px;
+  font-family: 'Rock Salt', cursive;
+  font-size: 1.5rem;
+  outline: none;                /* ⬅️ Prevents blue focus ring */
+}
+
+
+/* Buttons */
+.login-buttons {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  width: 100%;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.login-btn {
+  flex: 1;
+  min-width: 120px;            /* ✅ prevent shrinking too small */
+  padding: 10px 20px;
+  font-size: 1.2rem;
+  background-color: #e6ffff;
+  color: #666851;
+  border: none;
+  border-radius: 999px;
+  text-align: center;
+  font-family: 'Rock Salt', cursive;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+/* Divider */
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  margin: 24px 0;
+  color: #666851;
+  font-size: 0.95rem;
+}
+
+.divider hr {
+  flex: 1;
+  border: none;
+  border-top: 1px solid #666851;
+}
+
+/* Social login */
+.social-btn {
+  border: none !important;
+  outline: none !important;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 14px 0;
+  font-family: 'Rock Salt', cursive;
+  background-color: transparent;
+  color: #666851;
+  text-decoration: none;
+  font-size: 1rem;
+}
+
+.social-icon {
+  font-size: 20px;
+  background-color: #e6ffff;
+  border-radius: 50%;
+  padding: 6px;
+  color: #666851;
+}
+
+.login-input-group {
+  position: relative;
+  margin-bottom: 15px;
+}
+
+.login-icon {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  color: #666;
+}
+
+.login-input {
+  padding-left: 35px;
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+.login-error {
+  color: red;
+  margin-bottom: 10px;
+  font-size: 0.9rem;
+  font-weight: bold;
+  text-align: center;
+}
+
+.google-btn {
+  background-color: #ea4335;
+  color: white;
+  font-weight: bold;
+  padding: 10px;
+  border: none;
+  border-radius: 10px;
+  width: 100%;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.google-btn:hover {
+  background-color: #cc392e;
+}
+
+.login-divider {
+  margin: 15px 0;
+  color: #888;
+  font-size: 0.9rem;
+}
