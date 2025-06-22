@@ -1,0 +1,14 @@
+# deploy/docker/docker-compose.yml
+services:
+  node1:
+    build:
+      context: ../../
+      dockerfile: deploy/docker/collab-node.Dockerfile
+    ports:
+      - "3001:3001"
+  node2:
+    build:
+      context: ../../
+      dockerfile: deploy/docker/collab-node.Dockerfile
+    ports:
+      - "3002:3001"
