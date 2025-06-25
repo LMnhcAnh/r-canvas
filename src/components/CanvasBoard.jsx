@@ -1,31 +1,33 @@
-// CanvasBoard.jsx
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { onSnapshot, collection, getDocs, setDoc, deleteDoc, doc } from "firebase/firestore";
 import { db } from "../firebase";
 import "../style/style.css";
 
+// Constants for grid setup
 const TILE_SIZE = 20;
 const CANVAS_WIDTH = window.innerWidth;
-const CANVAS_HEIGHT = window.innerHeight - 73;
+const CANVAS_HEIGHT = window.innerHeight - 73; // subtract navbar height
 
 const CanvasBoard = ({ user }) => {
   const [params] = useSearchParams();
-  const roomId = params.get("room");
+  const roomId = params.get("room"); // Room ID from URL
   const isAdmin = user?.isAdmin;
   const navigate = useNavigate();
 
-  const canvasRef = useRef(null);
-  const [pixels, setPixels] = useState({});
-  const [color, setColor] = useState("#000000");
-  const [hoverTile, setHoverTile] = useState(null);
+  const canvasRef = useRef(null); // Reference to the canvas DOM
+  const [pixels, setPixels] = useState({}); // Stores pixel data
+  const [color, setColor] = useState("#000000"); // Selected color
+  const [hoverTile, setHoverTile] = useState(null); // Current hovered tile for preview
 
+  // 🚪 Redirect user if unauthorized or missing room
   useEffect(() => {
     if (!user || !user.uid || !roomId) {
       navigate("/");
     }
   }, [user, roomId, navigate]);
 
+  // 🔄 Realtime sync with Firestore pixel collection
   useEffect(() => {
     const unsub = onSnapshot(collection(db, `pixels-${roomId}`), (snap) => {
       const pixelData = {};
@@ -35,13 +37,15 @@ const CanvasBoard = ({ user }) => {
       });
       setPixels(pixelData);
     });
-    return () => unsub();
+    return () => unsub(); // Cleanup listener
   }, [roomId]);
 
+  // 🖼️ Draw grid and pixels on canvas whenever pixel data changes
   useEffect(() => {
     const ctx = canvasRef.current.getContext("2d");
     ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
+    // Draw grid lines
     ctx.strokeStyle = "#e0e0e0";
     ctx.lineWidth = 0.5;
     for (let x = 0; x <= CANVAS_WIDTH; x += TILE_SIZE) {
@@ -57,19 +61,21 @@ const CanvasBoard = ({ user }) => {
       ctx.stroke();
     }
 
+    // Draw filled pixels
     Object.entries(pixels).forEach(([key, color]) => {
-      if (color === "#ffffff") return;
+      if (color === "#ffffff") return; // Skip white (blank) pixels
       const [x, y] = key.split("_").map(Number);
       ctx.fillStyle = color;
       ctx.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
     });
   }, [pixels]);
 
+  // 🎨 Place or erase pixel in Firestore
   const placePixel = async (x, y, erase = false) => {
     const tileId = `${x}_${y}`;
     const ref = doc(db, `pixels-${roomId}`, tileId);
     if (erase) {
-      await deleteDoc(ref);
+      await deleteDoc(ref); // Erase pixel
     } else {
       await setDoc(ref, {
         color,
@@ -78,6 +84,7 @@ const CanvasBoard = ({ user }) => {
     }
   };
 
+  // 🖱️ Handle pixel placement on click
   const handleCanvasClick = (e) => {
     e.preventDefault();
     const rect = canvasRef.current.getBoundingClientRect();
@@ -87,6 +94,7 @@ const CanvasBoard = ({ user }) => {
     placePixel(x, y, isRightClick);
   };
 
+  // 🐭 Track hovered tile position for preview
   const handleMouseMove = (e) => {
     const rect = canvasRef.current.getBoundingClientRect();
     const x = Math.floor((e.clientX - rect.left) / TILE_SIZE);
@@ -94,14 +102,17 @@ const CanvasBoard = ({ user }) => {
     setHoverTile({ x, y });
   };
 
+  // ❌ Clear hover effect when leaving canvas
   const handleMouseLeave = () => setHoverTile(null);
 
+  // 🔚 Exit room and clear localStorage
   const handleExit = () => {
     localStorage.removeItem("rCanvasUser");
     localStorage.removeItem("roomId");
     navigate("/");
   };
 
+  // 🧹 Admin-only: erase all pixels
   const handleEraseAll = async () => {
     if (!isAdmin) return;
     const ref = collection(db, `pixels-${roomId}`);
@@ -125,7 +136,7 @@ const CanvasBoard = ({ user }) => {
         backgroundColor: "#f5f5f5",
       }}
     >
-      {/* Header */}
+      {/* 🚩 Header: Title, color picker, exit button */}
       <div style={{ gridArea: "header" }}>
         <div
           style={{
@@ -141,7 +152,7 @@ const CanvasBoard = ({ user }) => {
         >
           <div style={{ fontSize: "28px", color: "#DC77CD" }}>R/CANVAS</div>
 
-          {/* Color Picker */}
+          {/* 🎨 Color Picker */}
           <label style={{ fontSize: "40px", display: "flex", alignItems: "center", gap: "10px" }}>
             🎨
             <input
@@ -158,6 +169,7 @@ const CanvasBoard = ({ user }) => {
             />
           </label>
 
+          {/* 🔚 Exit Room Button */}
           <button
             onClick={handleExit}
             style={{
@@ -177,7 +189,7 @@ const CanvasBoard = ({ user }) => {
         </div>
       </div>
 
-      {/* Canvas */}
+      {/* 🖌️ Canvas */}
       <div style={{ gridArea: "canvas", position: "relative" }}>
         <canvas
           ref={canvasRef}
@@ -195,6 +207,7 @@ const CanvasBoard = ({ user }) => {
             height: `${CANVAS_HEIGHT}px`,
           }}
         />
+        {/* 🧊 Hover Preview Tile */}
         {hoverTile && (
           <div
             style={{
@@ -213,7 +226,7 @@ const CanvasBoard = ({ user }) => {
         )}
       </div>
 
-      {/* Tools */}
+      {/* 🛠️ Tools Bar */}
       <div
         style={{
           gridArea: "tools",
@@ -225,6 +238,7 @@ const CanvasBoard = ({ user }) => {
           padding: "10px",
         }}
       >
+        {/* 🧹 Erase All Button (only for admin) */}
         {isAdmin && (
           <button
             onClick={handleEraseAll}
